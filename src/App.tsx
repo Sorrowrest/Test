@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import "./App.scss";
-import { InputPlace } from "./components/input-place";
-import { SelectMenu } from "./components/select-menu";
-import { Window } from "./components/window";
+import InputPlace from "./components/input-place/index";
+import SelectMenu from "./components/select-menu/index";
+import Window from "./components/window/index";
 import { ElementCreated } from "./interfaces/ElementCreated";
 
 function App() {
