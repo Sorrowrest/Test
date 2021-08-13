@@ -19,7 +19,7 @@ export const InputPlace: React.FC<InputProps> = ({
       setHolder(`Введите URL картинки`);
     }
     console.log(placeholder);
-  }, [stateElement]);
+  }, [stateElement, placeholder]);
 
   const handleClick = () => {
     if (inputValue && stateElement) {

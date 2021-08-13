@@ -23,6 +23,9 @@ main {
   width: 100%;
   box-sizing: border-box;
   background: url(./img/stacked-waves-haikei.svg);
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
   height: 100vh;
   display: flex;
   flex-direction: row;

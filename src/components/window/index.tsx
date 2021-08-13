@@ -1,13 +1,13 @@
-import React, { ReactElement, ReactNode, useEffect, useState } from "react";
+import React, { ReactElement, useEffect, useState } from "react";
 import { WindowProps } from "../../interfaces/WindowProps";
 import { ElementParams } from "../../interfaces/ElementParams";
-import { ElementCreated } from "../../interfaces/ElementCreated";
 import { ChangeWindow } from "./changeWindow";
 import style from "./window.module.scss";
+import { ToolBar } from "../toolBar";
 
 export const Window: React.FC<WindowProps> = ({ isElement }) => {
   const [arrayElements, setElements] = useState<ReactElement[]>([]);
-  const [elementKeyprop, setKey] = useState<number>();
+  const [isShowBar, setBar] = useState<boolean>(false);
   const [isShow, setShow] = useState<boolean>(false);
   const [elementParams, setElParams] = useState<ElementParams | undefined>();
 
@@ -22,21 +22,29 @@ export const Window: React.FC<WindowProps> = ({ isElement }) => {
   };
 
   const changeSomethingEl = (newElement: ElementParams) => {
-    let Timedarray = arrayElements;
-
     arrayElements.map((el: ReactElement, index: number) => {
-      const newEl = React.createElement(
-        newElement.tagName,
-        {
+      let newEl: ReactElement;
+      if (newElement.tagName !== "img") {
+        newEl = React.createElement(
+          newElement.tagName,
+          {
+            key: newElement.id,
+            onClick: showToolBar,
+            id: newElement.id,
+          },
+          newElement.innerText
+        );
+      } else {
+        newEl = React.createElement(newElement.tagName, {
           key: newElement.id,
-          onClick: showChangingScreen,
+          onClick: showToolBar,
           id: newElement.id,
-        },
-        newElement.innerText
-      );
+          src: newElement.innerText,
+        });
+      }
       if (el.props.id === newElement.id) {
-        let arr = Timedarray.map((item) =>
-          item === Timedarray[index] ? newEl : item
+        const arr = arrayElements.map((item) =>
+          item === arrayElements[index] ? newEl : item
         );
         setElements(arr);
       }
@@ -44,14 +52,30 @@ export const Window: React.FC<WindowProps> = ({ isElement }) => {
     });
   };
 
-  const showChangingScreen = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const showChangingScreen = () => {
+    if (elementParams) {
+      setShow(true);
+    }
+  };
+
+  const deleteElement = () => {
+    if (elementParams) {
+      setElements(
+        arrayElements.filter((el) => el.props.id !== elementParams!.id)
+      );
+      setElParams(undefined);
+    }
+
+  };
+
+  const showToolBar = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target !== null) {
       setElParams({
         id: parseInt(event.target.id),
         innerText: event.target.innerText,
         tagName: event.target.localName,
       });
-      setShow(true);
+      setBar(true);
     }
   };
   useEffect(() => {
@@ -61,7 +85,7 @@ export const Window: React.FC<WindowProps> = ({ isElement }) => {
           isElement.tagName,
           {
             key: getRandomInt(0, 9999),
-            onClick: showChangingScreen,
+            onClick: showToolBar,
             id: getRandomInt(0, 9999),
           },
           isElement.info
@@ -71,6 +95,7 @@ export const Window: React.FC<WindowProps> = ({ isElement }) => {
         const newElement = React.createElement(isElement.tagName, {
           key: getRandomInt(0, 9999),
           src: isElement.info,
+          onClick: showToolBar,
           id: getRandomInt(0, 9999),
         });
         setElements((prevState) => [...prevState, newElement]);
@@ -80,6 +105,13 @@ export const Window: React.FC<WindowProps> = ({ isElement }) => {
 
   return (
     <div className={style.window}>
+      {isShowBar && (
+        <ToolBar
+          isShowBar={isShowBar}
+          showChangingScreen={showChangingScreen}
+          deleteElement={deleteElement}
+        />
+      )}
       {isShow && (
         <ChangeWindow
           changeSomethingEl={changeSomethingEl}
