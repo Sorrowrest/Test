@@ -1,30 +1,46 @@
-import React, { useEffect, useState } from "react";
+import React, { ReactElement, useEffect, useRef, useState } from "react";
 import style from "./changeWindow.module.scss";
 import { ElementParams } from "../../../interfaces/ElementParams";
 import clsx from "clsx";
 
 interface ChangeWindowProps {
-  elementParams: ElementParams | undefined;
+  arrayElements: ReactElement[] | undefined;
   closeChangeWindow: () => void;
-  changeSomethingEl: (newElement: ElementParams) => void;
+  changeAll: (newArray: ReactElement[]) => void;
 }
 
 export const ChangeWindow: React.FC<ChangeWindowProps> = ({
-  elementParams,
+  arrayElements,
   closeChangeWindow,
-  changeSomethingEl,
+  changeAll,
 }) => {
-  const [currentValue, setValue] = useState<string>("");
+  const [currentBlock, setBlock] = useState<ReactElement[] | undefined>([]);
   const [animBlock, setAnim] = useState<string>("");
   const [countAnims, setCount] = useState<number>(0);
+  let [value, setValue] = useState<string[]>([]);
+  
 
   useEffect(() => {
-    setValue(elementParams!.innerText);
-  }, [elementParams]);
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setValue(e.target.value);
-  };
+    setBlock(arrayElements!.map((el, i) => {
+      
+      return <h2 className={style.text_another}>
+        Change Text:{" "}
+        <input
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setValue(value.map(elem => {
+            if (elem === value[i]) {
+              return e.target.value;
+            } else {
+              return elem
+            }
+          }))}
+          defaultValue={value[i]}
+          value={value[i]}
+          key={el.props.id}
+          className={style.currentValueInput}
+        ></input>{" "}
+      </h2>
+    }));
+  }, [arrayElements]);
 
   const handleClose = () => {
     if (countAnims !== 0) {
@@ -39,15 +55,14 @@ export const ChangeWindow: React.FC<ChangeWindowProps> = ({
   const handleApply = () => {
     if (countAnims !== 0) {
       setAnim(style.animBlock);
-      if (elementParams) {
-        changeSomethingEl({
-          id: elementParams?.id,
-          tagName: elementParams.tagName,
-          innerText: currentValue,
-        });
-      }
     }
+    console.log(currentBlock);
+    console.log(value)
   };
+
+  useEffect(() => {
+    arrayElements!.map((item) => console.log('ok'));
+  }, []);
 
   useEffect(() => {
     if (countAnims === 2) {
@@ -63,16 +78,8 @@ export const ChangeWindow: React.FC<ChangeWindowProps> = ({
     >
       <div className={style.box}>
         <h2 className={style.text}>~ Changing window ~</h2>
-        <h2 className={style.text}>ID: {elementParams!.id}</h2>
+        {currentBlock}
 
-        <h2 className={style.text_another}>
-          Change Text:{" "}
-          <input 
-            onChange={handleChange}
-            value={currentValue}
-            className={style.currentValueInput}
-          ></input>{" "}
-        </h2>
         <div className={style.buttons_place}>
           <div onClick={handleClose} className={style.button}>
             Cancel

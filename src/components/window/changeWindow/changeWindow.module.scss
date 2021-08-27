@@ -45,7 +45,7 @@
 }
 
 .text {
-  margin-top: 5%;
+  margin: 5% 0;
   font-family: "Montserrat", sans-serif;
   width: 100%;
   font-weight: 700;
@@ -54,10 +54,10 @@
   color: var(--main-text-color);
 }
 .text_another {
-  margin-top: 5%;
+
   margin-left: 5%;
   font-family: "Montserrat", sans-serif;
-  width: auto;
+  width: 100%;
   font-weight: 700;
   text-align: left;
   font-size: 20px;

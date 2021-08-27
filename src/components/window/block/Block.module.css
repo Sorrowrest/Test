@@ -1,0 +1,11 @@
+.box {
+  width: 80%;
+  height: 10%;
+  background-color: bisque;
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  padding: 5px;
+  margin-bottom: 5px;
+}

@@ -15,9 +15,7 @@ export const InputPlace: React.FC<InputProps> = ({
   const [inputValue, setValue] = useState<string>("");
 
   useEffect(() => {
-    if (stateElement) {
-      setHolder(`Введите текст для${stateElement}`);
-    }
+    setHolder(`Введите текст для ${stateElement}`)
   }, [stateElement, placeholder]);
 
   const handleClick = () => {
@@ -42,7 +40,8 @@ export const InputPlace: React.FC<InputProps> = ({
           placeholder={placeholder}
         ></input>
         <button onClick={handleClick} className={style.plus}>
-          <span className={style.circle}> + </span>
+          <span className={style.circle}>{" "}
+          +{" "}</span>
         </button>
       </div>
     </>

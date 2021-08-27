@@ -4,6 +4,7 @@ import ChangeWindow from "./changeWindow/index";
 import style from "./window.module.scss";
 import ToolBar from "../toolBar/index";
 import { ElementCreated } from "../../interfaces/ElementCreated";
+import { Block } from "./block/Block";
 
 interface WindowProps {
   isElement: ElementCreated | undefined;
@@ -13,7 +14,6 @@ export const Window: React.FC<WindowProps> = ({ isElement }) => {
   const [arrayElements, setElements] = useState<ReactElement[]>([]);
   const [isShowBar, setBar] = useState<boolean>(false);
   const [isShow, setShow] = useState<boolean>(false);
-  const [elementParams, setElParams] = useState<ElementParams | undefined>();
 
   const getRandomInt = (min: number, max: number) => {
     min = Math.ceil(min);
@@ -25,8 +25,8 @@ export const Window: React.FC<WindowProps> = ({ isElement }) => {
     setShow(false);
   };
 
-  const changeSomethingEl = (newElement: ElementParams) => {
-    arrayElements.map((el: ReactElement, index: number) => {
+  const changeAll = (newArray: ReactElement[]) => {
+    /* arrayElements.map((el: ReactElement, index: number) => {
       let newEl: ReactElement;
       if (newElement.tagName !== "img") {
         newEl = React.createElement(
@@ -54,35 +54,18 @@ export const Window: React.FC<WindowProps> = ({ isElement }) => {
         setElements(arr);
       }
       return true;
-    });
+    }); */
   };
 
   const showChangingScreen = () => {
-    if (elementParams) {
+    if (arrayElements.length > 0) {
       setShow(true);
     }
   };
 
-  const deleteElement = () => {
-    if (elementParams) {
-      setElements(
-        arrayElements.filter((el) => el.props.id !== elementParams!.id)
-      );
-      setElParams(undefined);
-    }
+  const deals = ["Убраться в доме", "Покакать", "Поспать", "Яйцо", "Жопа"];
 
-  };
-
-  const showToolBar = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target !== null) {
-      setElParams({
-        id: parseInt(event.target.id),
-        innerText: event.target.innerText,
-        tagName: event.target.localName,
-      });
-      setBar(true);
-    }
-  };
+  const showToolBar = (event: React.ChangeEvent<HTMLInputElement>) => {};
   useEffect(() => {
     if (isElement) {
       if (isElement.tagName !== "img") {
@@ -90,7 +73,7 @@ export const Window: React.FC<WindowProps> = ({ isElement }) => {
           isElement.tagName,
           {
             key: getRandomInt(0, 9999),
-            onClick: showToolBar,
+            onClick: showChangingScreen,
             id: getRandomInt(0, 9999),
           },
           isElement.info
@@ -100,7 +83,7 @@ export const Window: React.FC<WindowProps> = ({ isElement }) => {
         const newElement = React.createElement(isElement.tagName, {
           key: getRandomInt(0, 9999),
           src: isElement.info,
-          onClick: showToolBar,
+          onClick: showChangingScreen,
           id: getRandomInt(0, 9999),
         });
         setElements((prevState) => [...prevState, newElement]);
@@ -108,23 +91,30 @@ export const Window: React.FC<WindowProps> = ({ isElement }) => {
     }
   }, [isElement]);
 
+  useEffect(() => {
+    if (arrayElements.length > 0) {
+      setBar(true);
+    }
+  }, [arrayElements]);
+
   return (
     <div className={style.window}>
       {isShowBar && (
         <ToolBar
           isShowBar={isShowBar}
           showChangingScreen={showChangingScreen}
-          deleteElement={deleteElement}
         />
       )}
       {isShow && (
         <ChangeWindow
-          changeSomethingEl={changeSomethingEl}
+          changeAll={changeAll}
           closeChangeWindow={closeChangeWindow}
-          elementParams={elementParams}
+          arrayElements={arrayElements}
         />
       )}
       {arrayElements}
+     
+      
     </div>
   );
 };
